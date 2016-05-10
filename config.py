@@ -27,3 +27,11 @@ url = 'git@github.com:haozhixin/%s.git'
 
 #common目录(打包到本地的目录)
 common_dir = '/tmp/program/common/src/common'
+
+#启动脚本名称
+start_script_name = {
+    'deploy1' : ['scripts-name']
+}
+
+#依赖关系执行包(在上线之前安装依赖包)
+setup_file = '/tmp/program/%s/scripts/env/setup.sh'

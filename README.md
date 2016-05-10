@@ -24,3 +24,11 @@ env.roledefs = {
 ```
 ### 执行下面命令就可以直接部署代码了
 * python deploy-noline.py {项目名称}
+
+### 回滚代码
+* python deploy-noline.py 项目名称 revert
+* 
+
+### 依赖包安装
+* 可以在config.sh 配置依赖包路径 setup_file=setup.sh
+* setup.sh 文件为安装依赖包的格式

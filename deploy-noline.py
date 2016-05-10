@@ -8,10 +8,24 @@ import sys
 
 now_time = time.strftime('%Y%m%d%H%M%S')
 
+
+#服务重启
+def restart(service):
+    for i in start_script_name[service]:
+        len_number = len(run('ls /etc/init.d/%s'%i,quiet=True))
+        if len_number < 55:
+            sudo('service %s restart' % i)
+            time.sleep(1)
+            sudo('service %s status' % i)
+
 project = sys.argv[1]
 @roles(project)
 def deploy(project):
     time_path = '%s/%s' % (deploy_dir[project], now_time)
+    #部署代码前需要把每个项目中的setup.sh文件放到部署的服务器上面
+    long_setup_file = put(setup_file%project, long_range_dir)[0]
+    run('chmod +x %s'%long_setup_file)
+    run(long_setup_file)
     check_codedir(project)
     local_update_code(project)
     # 获取包名
@@ -41,7 +55,10 @@ def deploy(project):
             run('rm latest')
             run('ln -s %s latest'%now_time)
     run('chown -R capitalcloud.capitalcloud %s' % deploy_dir[project])
+    restart(project)
     print green('success')
+
+
 
 #代码回滚
 @roles(project)
@@ -55,16 +72,25 @@ def Revert():
             run('rm latest')
         run('ln -s %s latest'%lodversion_name)
     run('chown -R capitalcloud.capitalcloud %s' % deploy_dir[project])
+    restart(project)
     print green('roll back success')
 
 
-#执行代码部署
+
 def mytask():
     execute(deploy, project)
 
-#执行代码回滚
 def myrevert():
     execute(Revert)
 
-# mytask()
-#myrevert()
+if __name__ == '__main__':
+    if len(sys.argv) == 3:
+        if sys.argv[2] == 'revert':
+            print 'roll back code'
+            myrevert()
+        else:
+            print '回滚代码请使用: revert'
+            print 'python deploy-noline.py project revert'
+    else:
+        mytask()
+
