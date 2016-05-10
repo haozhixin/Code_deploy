@@ -29,6 +29,6 @@ env.roledefs = {
 * python deploy-noline.py 项目名称 revert
 * 
 
-### 依赖包安装
+### 上线依赖包安装
 * 可以在config.sh 配置依赖包路径 setup_file=setup.sh
 * setup.sh 文件为安装依赖包的格式
