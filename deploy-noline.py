@@ -8,17 +8,32 @@ import sys
 
 now_time = time.strftime('%Y%m%d%H%M%S')
 
+project = sys.argv[1]
 
+@roles(project)
+def clear():
+    dir_name = deploy_dir[project]
+    histroy = run('ls %s'%dir_name).split('\t')
+    histroy_list = []
+    for iterator in histroy:
+        if str.isdigit(iterator) == True:
+            histroy_list.append(iterator)
+    if len(histroy_list) > 10:
+        histroy_list.reverse()
+        with cd(dir_name):
+            for i in histroy_list[10:]:
+                run('rm -rf %s'%i)
 #服务重启
-def restart(service):
-    for i in start_script_name[service]:
+@roles(project)
+def restart():
+    for i in start_script_name[project]:
         len_number = len(run('ls /etc/init.d/%s'%i,quiet=True))
         if len_number < 55:
-            sudo('service %s restart' % i)
+            run('service %s restart' % i)
             time.sleep(1)
-            sudo('service %s status' % i)
+            run('service %s status' % i)
+            time.sleep(1)
 
-project = sys.argv[1]
 @roles(project)
 def deploy(project):
     time_path = '%s/%s' % (deploy_dir[project], now_time)
@@ -55,8 +70,6 @@ def deploy(project):
             run('rm latest')
             run('ln -s %s latest'%now_time)
     run('chown -R capitalcloud.capitalcloud %s' % deploy_dir[project])
-    restart(project)
-    print green('success')
 
 
 
@@ -72,16 +85,22 @@ def Revert():
             run('rm latest')
         run('ln -s %s latest'%lodversion_name)
     run('chown -R capitalcloud.capitalcloud %s' % deploy_dir[project])
-    restart(project)
     print green('roll back success')
 
 
 
 def mytask():
+    #部署代码
     execute(deploy, project)
+    #重启服务
+    execute(restart)
+    #清理历史备份版本
+    execute(clear)
+    print green('success')
 
 def myrevert():
     execute(Revert)
+    execute(restart)
 
 if __name__ == '__main__':
     if len(sys.argv) == 3:
