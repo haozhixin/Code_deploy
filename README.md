@@ -1,18 +1,18 @@
-##Code_deploy 本项目概论
-本项目解决的问题：
+##Code_deploy 
+Problem solving:
 
-1. 代码本地更新
-2. 代码推到需要上线的服务器上
-3. 回滚功能
+1. code local update
+2. The code is pushed to the server that needs to be on the line.
+3. code roll back
 
-## 需要安装的软件：
+## Need to install the software package:
 
 ```java
 pip install fabric
 ```
-##代码使用方法：
+##use a method：
 
-* 需要定义的都在config.py里面,下面是举例
+* config.py, example
 
 ```java
 env.roledefs = {
@@ -22,13 +22,14 @@ env.roledefs = {
 }
 
 ```
-### 执行下面命令就可以直接部署代码了
-* python deploy-noline.py {项目名称}
+### Execute the following command to deploy the code directly.
 
-### 回滚代码
-* python deploy-noline.py 项目名称 revert
+* python deploy-noline.py {project name}
+
+### Code Roll Back 
+* python deploy-noline.py {project name} revert
 * 
 
-### 上线依赖包安装
-* 可以在config.sh 配置依赖包路径 setup_file=setup.sh
-* setup.sh 文件为安装依赖包的格式
+### project rely install
+* Configuration dependent path on config.sh :setup_file=setup.sh
+* setup.sh rely format
